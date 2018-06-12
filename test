@@ -1,0 +1,16 @@
+katya.makeFriends(pasha);
+katya.makeFriends(vovochka);
+
+katya.getMarried(vovochka);
+katya.getMarried(pasha);
+valery.makeFriends(pasha);
+valery.getMarried(pasha);
+console.log(vovochka.isMarried());
+console.log(katya.isMarried());
+
+katya.sayHello();
+vovochka.sayHello();
+
+const valery = new Man("Valery",25,man);
+const vovochka = new Man("Vovochka",12,man);
+const pasha = new Man("Pasha", 30,man);
