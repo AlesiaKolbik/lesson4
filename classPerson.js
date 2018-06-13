@@ -5,7 +5,7 @@ class Person {
         this._bestfriend = null;
         this._friends = [];
         this.age = age;
-        this._gender = gender;
+        this._spouse = null;
         Object.defineProperty(
             this, "_name", {
                 writable: false,
@@ -14,32 +14,7 @@ class Person {
     }
 
     sayHello(){
-        if (this.age < 18){
-            console.log(`Привет!Меня зовут ${this._name} и мне ${this.age} ${this.getAgeWord()}`);
-        }
-        else if(this.gender === "man"){
-            console.log(`Привет! Я мужчина, меня зовут ${this._name}`);
-        }
-        else if(this.gender === "woman"){
-            console.log(`Привет! Я женщина, меня зовут ${this._name}`);
-        }
-        else{
             console.log(`Привет! Меня зовут ${this._name}`);
-        }
-    }
-
-    getAgeWord(){
-        let ageWord = null;
-        if(this.age === 1){
-             ageWord = "год";
-        }
-        else if(this.age >=2 && this.age <=4){
-            ageWord = "года";
-        }
-        else if(this.age === 0 || this.age >=5 && this.age <=17){
-            ageWord = "лет";
-        }
-        return ageWord;
     }
 
     isAdultPerson(person){
@@ -68,66 +43,49 @@ class Person {
         return this._friends.includes(person);
     }
 
-    getMarried(person){
-        if(!this.isAdultPerson(person) || !this.isAdultPerson(this)){
+    getMarried(person) {
+        if (!this.isAdultPerson(person) || !this.isAdultPerson(this)) {
             console.log("Жениться рано еще!");
+            return false;
         }
-        else if(!this.isFriendOf(person)) {
-            console.log("Попробуйте сначала подружиться.")
+        else if (this.isMarried(person)) {
+            return true;
         }
-        else if(this.isWoman(this)){
-            if(this.isWoman(person)){
-                console.log(`Упс! Однополые браки запрещены!`);
+        else if (person.constructor !== this.constructor) {
+            this._spouse = person;
+            if (person.getMarried(this)) {
+                return true;
             }
             else {
-                this._husband = person;
-                person._wife = this;
-                console.log(`Готово! Теперь ${person._name} и ${this._name} женаты! Поздравляю!`);
+                this._spouse = null;
             }
         }
-        else{
-            if(this.isMan(person)){
-                console.log(`Упс! Однополые браки запрещены!`);
-            }
-            else{
-                this._wife = person;
-                person._husband = this;
-                console.log(`Готово! Теперь ${person._name} и ${this._name} женаты! Поздравляю!`);
-            }
-        }
+        return false;
+
     }
 
     isMarried(){
-        if(this._gender === "woman"){
-            return this._husband !== null;
-        }
-        else if(this._gender === "man"){
-            return this._wife !== null;
-        }
+       return this._spouse !== null;
     }
 
-    isWoman(person) {
-        return person instanceof Woman;
-    }
-
-    isMan(person) {
-        return person instanceof Man;
-    }
 }
 
 class Man extends Person {
     constructor(name, age){
         super(name,age);
-        this._wife = null;
-        this._gender = "man";
+    }
+
+    getMarried(person){
+        return person instanceof Woman && super.getMarried(person);
     }
 }
 
 class Woman extends Person{
     constructor(name,age){
         super(name,age);
-        this._husband = null;
-        this._gender = "woman";
+    }
+    getMarried(person){
+        return person instanceof Man && super.getMarried(person);
     }
 }
 
@@ -137,20 +95,24 @@ const katya = new Woman("Katya", 20);
 const valery = new Man("Valery",25);
 const vovochka = new Man("Vovochka",12);
 const pasha = new Man("Pasha", 30);
+katya.sayHello();
+valery.sayHello();
+pasha.sayHello();
 
-katya.makeFriends(pasha);
+
 katya.makeFriends(vovochka);
 valery.makeFriends(pasha);
 
 katya.getMarried(vovochka);
 katya.getMarried(pasha);
 valery.getMarried(pasha);
+katya.makeFriends(valery);
+katya.getMarried(valery);
 
 console.log(vovochka.isMarried());
 console.log(katya.isMarried());
 
-katya.sayHello();
-vovochka.sayHello();
+
 
 
 
